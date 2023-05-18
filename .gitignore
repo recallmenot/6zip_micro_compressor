@@ -13,7 +13,6 @@ heatshrink/
 *.jpeg
 *.pbm
 
-*.h
 
 *.packed
 *.uz*
