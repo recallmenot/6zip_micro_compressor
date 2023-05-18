@@ -11,6 +11,8 @@ heatshrink/
 *.png
 *.jpg
 *.jpeg
+*.pbm
+
 *.h
 
 *.packed
