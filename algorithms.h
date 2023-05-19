@@ -1,18 +1,32 @@
 #ifndef algorithms_h
 #define algorithms_h
 
-#include "packbits/packbits.h"
 
+/* maintenance defines, copy to your .c (before include)
+#define COMP_PACKBITS 1
+#define COMP_HEATSHRINK 1
+#define COMP_UZLIB 1
+*/
+
+#if COMP_PACKBITS==1
+#include "packbits/packbits.h"
+#endif
+
+#if COMP_UZLIB==1
 #define UZ_OUT_CHUNK_SIZE 1
 #include "uzlib/src/uzlib.h"
+#endif
 
+#if COMP_HEATSHRINK==1
 #include "heatshrink/heatshrink_common.h"
 #include "heatshrink/heatshrink_config.h"
 #include "heatshrink/heatshrink_encoder.h"
 #include "heatshrink/heatshrink_decoder.h"
+#endif
 
 
 
+#if COMP_PACKBITS==1
 int compress_packbits(data_object* data) {
 	data->output_length = packbits(data->input_data, data->output_data, data->input_length, data->output_length);
 
@@ -24,9 +38,11 @@ int decompress_packbits(data_object* data) {
 
 	return 0;
 }
+#endif
 
 
 
+#if COMP_UZLIB==1
 int compress_uzlib(data_object* data) {
 	// Initialize compression structure
 	struct uzlib_comp comp = {0};
@@ -148,9 +164,11 @@ int decompress_uzlib(data_object* data) {
 
 	return 0;
 }
+#endif
 
 
 
+#if COMP_HEATSHRINK==1
 int compress_heatshrink(data_object* data) {
 	// Initialize heatshrink encoder
 	heatshrink_encoder *hse = heatshrink_encoder_alloc(8, 4);
@@ -257,5 +275,6 @@ int decompress_heatshrink(data_object* data) {
 
 	return 0;
 }
+#endif
 
 #endif // algorithms_h

@@ -51,6 +51,10 @@ typedef struct {
 	uint8_t enable_raw;
 } data_object;
 
+#define COMP_PACKBITS 1
+#define COMP_HEATSHRINK 1
+#define COMP_UZLIB 1
+
 #include "algorithms.h"
 
 #endif // compressor_h
