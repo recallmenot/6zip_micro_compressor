@@ -55,6 +55,11 @@ typedef struct {
 #define COMP_HEATSHRINK 1
 #define COMP_UZLIB 1
 
+
+
+// recursive include guard
+#ifndef algorithms_h
 #include "algorithms.h"
+#endif
 
 #endif // compressor_h

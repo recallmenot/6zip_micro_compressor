@@ -1,11 +1,15 @@
 #ifndef algorithms_h
 #define algorithms_h
 
+// recursive include guard
+#ifndef compressor_h
+#include "compressor.h"
+#endif
 
 /* maintenance defines, copy to your .c (before include)
 #define COMP_PACKBITS 1
-#define COMP_HEATSHRINK 1
 #define COMP_UZLIB 1
+#define COMP_HEATSHRINK 1
 */
 
 #if COMP_PACKBITS==1
@@ -27,13 +31,13 @@
 
 
 #if COMP_PACKBITS==1
-int compress_packbits(data_object* data) {
+static inline int compress_packbits(data_object* data) {
 	data->output_length = packbits(data->input_data, data->output_data, data->input_length, data->output_length);
 
 	return 0;
 }
 
-int decompress_packbits(data_object* data) {
+static inline int decompress_packbits(data_object* data) {
 	data->output_length = unpackbits(data->input_data, data->output_data, data->input_length, data->output_length);
 
 	return 0;
@@ -43,7 +47,7 @@ int decompress_packbits(data_object* data) {
 
 
 #if COMP_UZLIB==1
-int compress_uzlib(data_object* data) {
+static int compress_uzlib(data_object* data) {
 	// Initialize compression structure
 	struct uzlib_comp comp = {0};
 	comp.dict_size = 32768;
@@ -51,7 +55,7 @@ int compress_uzlib(data_object* data) {
 	//comp.outlen = output_max_size - 4;
 
 	size_t hash_size = sizeof(uzlib_hash_entry_t) * (1 << comp.hash_bits);
-	comp.hash_table = malloc(hash_size);
+	comp.hash_table = (uzlib_hash_entry_t*)malloc(hash_size);
 	memset(comp.hash_table, 0, hash_size);
 
 	// Perform compression
@@ -90,7 +94,7 @@ int compress_uzlib(data_object* data) {
 
 	if (data->enable_raw != 1) {
 		// construct footer
-		unsigned crc = ~uzlib_crc32(data->output, data->input_length, ~0);
+		unsigned crc = ~uzlib_crc32(data->output_data, data->input_length, ~0);
 		memcpy(data->output_data + data->output_write_position, &crc, sizeof(crc));
 		data->output_write_position += sizeof(crc);
 		memcpy(data->output_data + data->output_write_position, &data->input_length, sizeof(data->input_length));
@@ -102,7 +106,7 @@ int compress_uzlib(data_object* data) {
 	return 0;
 }
 
-int decompress_uzlib(data_object* data) {
+static int decompress_uzlib(data_object* data) {
 	uzlib_init();
 
 	uint32_t output_data_length;
@@ -159,6 +163,7 @@ int decompress_uzlib(data_object* data) {
 		printf("Error during decompression: %d\n", res);
 		exit(-res);
 	}
+// may be not broken anymore since compression CRC has been fixed (reference was to output, not output_data)
 */
 	data->output_length = d_stream.dest - data->output_data;
 
@@ -169,7 +174,7 @@ int decompress_uzlib(data_object* data) {
 
 
 #if COMP_HEATSHRINK==1
-int compress_heatshrink(data_object* data) {
+static int compress_heatshrink(data_object* data) {
 	// Initialize heatshrink encoder
 	heatshrink_encoder *hse = heatshrink_encoder_alloc(8, 4);
 	if (!hse) {
@@ -239,7 +244,7 @@ int compress_heatshrink(data_object* data) {
 	return 0;
 }
 
-int decompress_heatshrink(data_object* data) {
+static int decompress_heatshrink(data_object* data) {
 	// Set up heatshrink decoder
 	heatshrink_decoder *hsd;
 	hsd = heatshrink_decoder_alloc(data->input_length, 8, 4); // Choose appropriate window_sz2 and lookahead_sz2 values

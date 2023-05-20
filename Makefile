@@ -16,7 +16,7 @@ uzlib.a:
 	$(MAKE) -C uzlib
 
 heatshrink.a:
-	$(MAKE) -C heatshrink
+	$(MAKE) -C heatshrink libraries
 
 IO_files=*.uz* *.packed *.heatshrunk *_unpacked.pbm *_deuz*.pbm *_unheatshrunk.pbm
 

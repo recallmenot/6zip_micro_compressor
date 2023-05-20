@@ -162,9 +162,9 @@ void print_help() {
 	printf("./compressor --file --decompress --algorithm input.file output_extension\n");
 	printf("\navaliable algorithms:\n");
 	printf("   * packbits  : run length encoding\n");
-	printf("   * uzlibfull : DEFLATE with header, CRC and length bytes\n");
-	printf("   * uzlibraw  : DEFLATE without header, CRC and length bytes\n");
-	printf("   * heatshrink: LZSS-based for embedded devices\n");
+	printf("   * uzlibfull : DEFLATE (dictionary+Huffman) with header, CRC and length bytes\n");
+	printf("   * uzlibraw  : DEFLATE (dictionary+Huffman) without header, CRC and length bytes\n");
+	printf("   * heatshrink: LZSS (dictionary+breakeven) for embedded devices with little RAM\n");
 }
 
 

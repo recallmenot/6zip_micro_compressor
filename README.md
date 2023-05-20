@@ -3,10 +3,10 @@ This program serves to store compressed 1-bit-per-pixel images / generic files o
 
 There are 3 algorithms to choose from:
  * the [skirridsystems](https://github.com/skirridsystems) [implementation](https://github.com/skirridsystems/packbits) of the [packbits](https://web.archive.org/web/20080705155158/http://developer.apple.com/technotes/tn/tn1023.html) run-length (de)compression algorithm. largest compressed size, smallest code space use for decompression.
-  * the [pfalcon](https://github.com/pfalcon) [radically debloated implementation](https://github.com/pfalcon/uzlib) of the DEFLATE/zlib/gzip (de)compression algorithm named (uzlib). there are two flavors:
+  * the [pfalcon](https://github.com/pfalcon) [radically debloated implementation](https://github.com/pfalcon/uzlib) of the DEFLATE (dictionary + huffman trees) (de)compression algorithm named (uzlib), there are two flavors:
     * uzlibfull, which produces a file with compression header and trailer (CRC, length of contents)
     * uzlibraw, which has the header and trailer stripped away (smaller size)
-  * the [atomicobject](https://github.com/atomicobject) [heatshrink](https://github.com/atomicobject/heatshrink) compression algorithm for embedded devices with very limited RAM
+  * the [atomicobject](https://github.com/atomicobject) [heatshrink](https://github.com/atomicobject/heatshrink) LZSS (dictionary + breakeven) compression algorithm for embedded devices with very limited RAM
 
 
 
