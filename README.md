@@ -36,6 +36,7 @@ For organisatory purposes it is heavily reccomended you keep the compressed file
 ## compressing images
 
 1. Use an image editing tool like pinta, paint.net or GIMP to turn your image into the right size (e.g. 32 x 32 pixels) and convert it to monochrome (black and white). We want a 1 bit per pixel image in the right size. Save it as a TIFF or BMP (lossless).
+2. for images that belong together, you may want to stack them vertically before compression. This may result in greater compression with the dictionary-based algorithms. Use imagemagick `convert -append 1.tiff 2.tiff 3.tiff out.tiff`
 2. Use imagemagick to convert the image to the pbm format `convert -monochrome image.tiff image.pbm`
 3. strip the remaining pbm header and compress using `./compressor --image --compress`
 4. convert the packed data to an array in a .h file `xxd -i image.[ext] > image.h`, where [ext] is one of the compressed extensions above
