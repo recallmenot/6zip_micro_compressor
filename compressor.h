@@ -24,6 +24,7 @@ enum algorithms{
 	algo_uzlib_full,
 	algo_uzlib_raw,
 	algo_heatshrink,
+	algo_strip,
 };
 
 typedef struct {

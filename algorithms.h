@@ -26,6 +26,9 @@
 #include "heatshrink/heatshrink_config.h"
 #include "heatshrink/heatshrink_encoder.h"
 #include "heatshrink/heatshrink_decoder.h"
+// control memory usage vs. better compression
+#define HEATSHRINK_WINDOW_SZ2 8		// 4 .. 15			(8 default)
+#define HEATSHRINK_LOOKAHEAD_SZ2 4	// 3 .. (WINDOW_SZ2 - 1)	(4 default)
 #endif
 
 
@@ -176,7 +179,7 @@ static int decompress_uzlib(data_object* data) {
 #if COMP_HEATSHRINK==1
 static int compress_heatshrink(data_object* data) {
 	// Initialize heatshrink encoder
-	heatshrink_encoder *hse = heatshrink_encoder_alloc(8, 4);
+	heatshrink_encoder *hse = heatshrink_encoder_alloc(HEATSHRINK_WINDOW_SZ2, HEATSHRINK_LOOKAHEAD_SZ2);
 	if (!hse) {
 		perror("Error allocating heatshrink encoder");
 		free(data->input_data);
@@ -247,7 +250,7 @@ static int compress_heatshrink(data_object* data) {
 static int decompress_heatshrink(data_object* data) {
 	// Set up heatshrink decoder
 	heatshrink_decoder *hsd;
-	hsd = heatshrink_decoder_alloc(data->input_length, 8, 4); // Choose appropriate window_sz2 and lookahead_sz2 values
+	hsd = heatshrink_decoder_alloc(data->input_length, HEATSHRINK_WINDOW_SZ2, HEATSHRINK_LOOKAHEAD_SZ2); // Choose appropriate window_sz2 and lookahead_sz2 values
 	if (!hsd) {
 		perror("Error allocating heatshrink decoder");
 		return 1;
@@ -281,5 +284,11 @@ static int decompress_heatshrink(data_object* data) {
 	return 0;
 }
 #endif
+
+static inline int copy_buffers(data_object* data) {
+	memcpy(data->output_data, data->input_data, data->input_length);
+	data->output_length = data->input_length;
+	return 0;
+}
 
 #endif // algorithms_h

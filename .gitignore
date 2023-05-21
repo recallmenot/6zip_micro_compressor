@@ -18,6 +18,8 @@ heatshrink/
 *.packed
 *.uz*
 *.heatshrunk
+*.stripped
 *_unpacked.pbm
 *_deuz*.pbm
 *_unheatshrunk.pbm
+*_unstripped.pbm

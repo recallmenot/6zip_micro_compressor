@@ -12,13 +12,16 @@ make
 ./compressor --image --decompress --packbits bomb.i.packed 32 32	# into bomb_i_unpacked.pbm
 
 ./compressor --image --compress --uzlibfull bomb.pbm			# into bomb.i.uzf
-./compressor --image --decompress --uzlibfull bomb.i.uzf 32 32		# into bomb_i_de-uzf.pbm
+./compressor --image --decompress --uzlibfull bomb.i.uzf 32 32		# into bomb_i_deuzf.pbm
 
 ./compressor --image --compress --uzlibraw bomb.pbm			# into bomb.i.uzr
-./compressor --image --decompress --uzlibraw bomb.i.uzr 32 32		# into bomb_i_de-uzr.pbm
+./compressor --image --decompress --uzlibraw bomb.i.uzr 32 32		# into bomb_i_deuzr.pbm
 
 ./compressor --image --compress --heatshrink bomb.pbm			# into bomb.i.heatshrunk
 ./compressor --image --decompress --heatshrink bomb.i.heatshrunk 32 32	# into bomb_i_unheatshrunk.pbm
+
+./compressor --image --compress --strip bomb.pbm			# into bomb.i.stripped
+./compressor --image --decompress --strip bomb.i.stripped 32 32		# into bomb_i_destripped.pbm
 
 
 
@@ -36,6 +39,9 @@ make
 ./compressor --file --compress --heatshrink bomb.pbm			# into bomb.f.heatshrunk
 ./compressor --file --decompress --heatshrink bomb.f.heatshrunk pbm	# into bomb_f_unheatshrunk.pbm
 
-
+echo ""
+echo ""
+echo "now calling --help"
+./compressor --help
 
 sleep 5

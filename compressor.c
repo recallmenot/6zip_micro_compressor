@@ -1,4 +1,5 @@
 #include "compressor.h"
+#include "algorithms.h"
 
 
 void header_pbm_remove(FILE *input, uint32_t* width, uint32_t* height) {
@@ -86,6 +87,10 @@ int process_file(file_object* file) {
 			compress_fn = compress_heatshrink;
 			decompress_fn = decompress_heatshrink;
 			break;
+		case algo_strip:
+			printf(", strip");
+			compress_fn = copy_buffers;
+			decompress_fn = copy_buffers;
 	}
 
 #if LOG_LVL == 1
@@ -165,6 +170,7 @@ void print_help() {
 	printf("   * uzlibfull : DEFLATE (dictionary+Huffman) with header, CRC and length bytes\n");
 	printf("   * uzlibraw  : DEFLATE (dictionary+Huffman) without header, CRC and length bytes\n");
 	printf("   * heatshrink: LZSS (dictionary+breakeven) for embedded devices with little RAM\n");
+	printf("   * strip     : only remove/restore pbm image header\n");
 }
 
 
@@ -259,9 +265,14 @@ int parameters_to_config(file_object* file, int argc, char* argv[]) {
 		strcat(extension, ".heatshrunk");
 		strcat(suffix, "_unheatshrunk");
 	}
+	else if (strcmp(argv[3], "--strip") == 0) {
+		file->algo = algo_strip;
+		strcat(extension, ".stripped");
+		strcat(suffix, "_destripped");
+	}
 	else {
 		printf("Invalid compression algorithm: %s\n", argv[3]);
-		printf("options: --packbits, --uzlibfull, --uzlibraw or --heatshrink\n");
+		printf("options: --packbits, --uzlibfull, --uzlibraw, --heatshrink or --strip\n");
 		return 1;
 	}
 
@@ -283,6 +294,10 @@ int parameters_to_config(file_object* file, int argc, char* argv[]) {
 			strcat(file->output_file, argv[5]);
 			file->output_length = 0;
 			n_expected_arguments = 6;
+		}
+		if (file->algo == algo_strip) {
+			printf("Only images can be stripped of their pbm header!\n");
+			return 1;
 		}
 	}
 	else if (file->file_type == file_type_image_pbm ) {
@@ -314,7 +329,11 @@ int parameters_to_config(file_object* file, int argc, char* argv[]) {
 
 int main(int argc, char *argv[]) {
 	printf("\n\n#### 6zip micro COMPRESSOR\n");
-	if (test_arguments_n_min(argc, 5) || !strcmp(argv[1], "--help")) {
+	if (!strcmp(argv[1], "--help")) {
+		print_help();
+		return 0;
+	}
+	if (test_arguments_n_min(argc, 5)) {
 		return 1;
 	}
 
